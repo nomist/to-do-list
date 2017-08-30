@@ -11,6 +11,7 @@ class ListTodo extends Component {
     this.addTask = this.addTask.bind(this);
     this.setCurrentTask = this.setCurrentTask.bind(this);
     this.checkTask = this.checkTask.bind(this);
+    this.deleteTask = this.deleteTask.bind(this);
   }
 
   setCurrentTask(e) {
@@ -23,7 +24,10 @@ class ListTodo extends Component {
     const { tasks, currentTask } = this.state;
     if (currentTask.length) {
       this.setState({
-        tasks: [ ...tasks, { text: currentTask, checked: false } ],
+        tasks: [ ...tasks, {
+          text: currentTask,
+          checked: false
+        }],
         currentTask: ''
       });
     }
@@ -43,20 +47,31 @@ class ListTodo extends Component {
     }.bind(this)
   }
 
+  deleteTask(num) {
+    return function() {
+      const { tasks } = this.state;
+      this.setState ({
+        tasks: tasks.filter( (item, i) => {
+          return i !== num;
+        })
+      });
+    }.bind(this)
+  }
+
   render() {
     const { tasks, currentTask } = this.state;
-
     return (
       <div>
         <ul>
           {tasks.map((item, i) =>
-            <li onClick={this.checkTask(i)} key={i} style={
-              item.checked
-                ? {textDecoration: 'line-through'}
-                : {}
-            }>{item.text}
-            <button>Edit</button>
-            <button>Delete</button>
+            <li key={i + item.text}>
+              <span onClick={this.checkTask(i)} style={
+                item.checked
+                  ? {textDecoration: 'line-through'}
+                  : {}
+              }>{item.text}</span>
+              <button>Edit</button>
+              <button onClick={this.deleteTask(i)}>Delete</button>
             </li>
           )}
         </ul>
